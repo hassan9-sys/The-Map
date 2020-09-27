@@ -1,0 +1,95 @@
+import itertools
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import numpy as np
+import random
+
+
+def avancerRobot(robot):
+   
+    x,y = robot
+    nouveauX, nouveauY =( x+1, y+1)
+    
+    if contientObstacles(nouveauX, y) :
+       
+        nouveauX = x
+    if contientObstacles(x, nouveauY)  :
+        nouveauY = y
+    
+
+    return (nouveauX, nouveauY)
+
+def genererObstacles():
+  
+    global matrice
+    global ax
+
+   
+    NOMBRE_OBSTACLES = 10
+    for o in range(1, NOMBRE_OBSTACLES):
+        
+        x = random.randrange(1, 200)
+        y = random.randrange(1, 200)
+      
+        largeur = random.choice([10, 20,30,40, 50])
+        hauteur = random.choice([10, 20,30,40, 50])
+
+        
+        rect = matplotlib.patches.Rectangle((x, y), largeur, hauteur, color='black')
+        ax.add_patch(rect)
+
+        
+        for j in range(y, min(y+hauteur, 200)):
+            for i in range(x, min(x+largeur, 200)):
+                
+                matrice[i][j] = 1
+
+def contientObstacles(x, y):
+   
+    global matrice
+
+    TAUX_AFFICHAGE = 2
+    x,y = x+TAUX_AFFICHAGE, y+TAUX_AFFICHAGE
+
+    if x < 200 and y < 200 :
+        
+        if matrice[x][y] == 1 :
+            return True
+        else :
+            return False
+    else :
+        return True
+
+
+def animerMouvementRobot(i):
+    """
+        Faire bouger le robot en animation
+    """
+    global robot
+    # faire avancer le robot et mettre à jour les données 
+    robot = avancerRobot(robot)
+    x, y = robot
+    mat.set_data(x, y)
+    return mat,
+
+
+matrice = np.zeros((200,200))
+
+robot = (0, 0)
+
+
+fig, ax = plt.subplots()
+
+genererObstacles()
+
+
+
+x, y = robot
+mat, = ax.plot(x, y, 'o')
+
+ax.axis([0,200,0,200])
+
+
+an = animation.FuncAnimation(fig, animerMouvementRobot, interval=20)
+plt.show()
